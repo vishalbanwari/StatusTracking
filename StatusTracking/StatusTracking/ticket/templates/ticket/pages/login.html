@@ -1,0 +1,113 @@
+{% load staticfiles %}
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/> 
+<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+<script>
+$(document).ready(function() {
+    $('#productForm')
+        // IMPORTANT: You must declare .on('init.field.fv')
+        // before calling .formValidation(options)
+        .on('init.field.fv', function(e, data) {
+            // data.fv      --> The FormValidation instance
+            // data.field   --> The field name
+            // data.element --> The field element
+
+            var $icon      = data.element.data('fv.icon'),
+                options    = data.fv.getOptions(),                      // Entire options
+                validators = data.fv.getOptions(data.field).validators; // The field validators
+
+            if (validators.notEmpty && options.icon && options.icon.required) {
+                // The field uses notEmpty validator
+                // Add required icon
+                $icon.addClass(options.icon.required).show();
+            }
+        })
+
+        .formValidation({
+            framework: 'bootstrap',
+            icon: {
+                required: 'fa fa-asterisk',
+                valid: 'fa fa-check',
+                invalid: 'fa fa-times',
+                validating: 'fa fa-refresh'
+            },
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The name is required'
+                        }
+                    }
+                },
+                description: {
+                    validators: {
+                        stringLength: {
+                            max: 300,
+                            message: 'The description must be less than 300 characters long'
+                        }
+                    }
+                },
+                price: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The price is required'
+                        },
+                        numeric: {
+                            message: 'The price must be a number'
+                        }
+                    }
+                },
+                quantity: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The quantity is required'
+                        },
+                        integer: {
+                            message: 'The quantity must be a number'
+                        }
+                    }
+                }
+            }
+        })
+
+        .on('status.field.fv', function(e, data) {
+            // Remove the required icon when the field updates its status
+            var $icon      = data.element.data('fv.icon'),
+                options    = data.fv.getOptions(),                      // Entire options
+                validators = data.fv.getOptions(data.field).validators; // The field validators
+
+            if (validators.notEmpty && options.icon && options.icon.required) {
+                $icon.removeClass(options.icon.required).addClass('fa');
+            }
+        });
+});
+</script>
+</head>
+<body>
+<div class="container" style="margin: 150px;">
+<img src="{% static "img/logo.png" %}"/>
+<h2>Service Request Form</h2>
+<form method="post" data-toggle="validator" action="ticket/pages/profile/" id="productForm" role="form">
+	 {% csrf_token %}
+	<fieldset>
+         <!--   {{ form.as_table }} -->
+		 <div class="form-group">
+		  <label for="username">Username</label>
+		 <input class="form-control" style="width:auto" type="text" placeholder="Username" name="user"></input>
+		 </div>
+		 <div class="form-group">
+		 <label for="password">Password</label>
+         <input class="form-control" style="width:auto" type="password" placeholder="Password" name="pass"></input>
+		</div>
+		<div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+		{% if error %}
+		{{error}}
+		{% endif %}
+	</fieldset>
+</form>
+</div>
+</body>
+</html>

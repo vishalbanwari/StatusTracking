@@ -1,0 +1,79 @@
+{% load staticfiles %}
+<head>
+<link rel="stylesheet" type="text/css" href="{% static 'css/buttons.dataTables.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.min.css' %}"/>
+<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css"/> --> 
+<script type="text/javascript" src="{% static 'js/jquery-3.1.0.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/dataTables.buttons.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jszip.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/pdfmake.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vfs_fonts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/buttons.html5.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+<!--<script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"</script> -->
+<!-- <script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script> -->
+<script>
+$(document).ready(function() {
+    $('#example').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+    } );
+} );
+</script>
+</head>
+<body>
+
+<ul class="nav nav-tabs" style="background-color:#000000">
+  <a class="navbar-brand" style="color:#859999" href="{% url 'home' %}">Home</a>
+  <p class="navbar-text navbar-right" style="margin-right:80px; color:#859999" >Hello <a href="#" style="color:#859999" class="navbar-link">{{ request.session.logged_in }}</a></p>
+  <a class="navbar-text navbar-right" style="margin-right:80px; color:#859999" role="presentation" href="{% url 'logout' %}">Logout</a>
+</ul>
+<div class="container-fluid">
+<table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+<div>
+<thead>
+<tr>
+<th>Customer</th>
+<th>End User</th>
+<th>Site Name</th>
+<th>Site Address</th>
+<th>Req. Date of Install. by Customer</th>
+<th>Pre Sign off Sheet Status</th>
+<th>Site Status</th>
+<th>No of Jobs</th>
+<th>Name of Product Supplied</th>
+<th>Quantity</th>
+<th>Transformer Valve Size Details</th>
+<th>Material Reached at Site</th>
+<th>Sales Manager Request No.</th>
+</tr>
+</thead>
+<tbody>
+    <tr> 
+        <td>{{ output.customer }}</td>
+		<td>{{ output.end_user }}</td>
+		<td>{{ output.site_name }}</td>
+		<td>{{ output.site_address }}</td>
+		<td>{{ output.req_date_of_installation_by_customer }}</td>
+		<td>{{ output.pre_sign_off_sheet_status }}</td>
+		<td>{{ output.site_status }}</td>
+		<td>{{ output.no_of_jobs }}</td>
+		<td>{{ output.name_of_product_supplied }}</td>
+		<td>{{ output.quantity }}</td>
+		<td>{{ output.transformer_valve_size_details }}</td>
+		<td>{{ output.material_reached_at_site }}</td>
+		<td>{{ output.sales_manager_request_no }}</td>
+    </tr>
+</tbody>
+</div>
+</table>
+</div>
+</body>

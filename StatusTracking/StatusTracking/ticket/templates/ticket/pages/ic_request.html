@@ -1,0 +1,209 @@
+{% load staticfiles %}
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/> 
+<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+<script>
+$(document).ready(function() {
+    $('#productForm')
+        // IMPORTANT: You must declare .on('init.field.fv')
+        // before calling .formValidation(options)
+        .on('init.field.fv', function(e, data) {
+            // data.fv      --> The FormValidation instance
+            // data.field   --> The field name
+            // data.element --> The field element
+
+            var $icon      = data.element.data('fv.icon'),
+                options    = data.fv.getOptions(),                      // Entire options
+                validators = data.fv.getOptions(data.field).validators; // The field validators
+
+            if (validators.notEmpty && options.icon && options.icon.required) {
+                // The field uses notEmpty validator
+                // Add required icon
+                $icon.addClass(options.icon.required).show();
+            }
+        })
+
+        .formValidation({
+            framework: 'bootstrap',
+            icon: {
+                required: 'fa fa-asterisk',
+                valid: 'fa fa-check',
+                invalid: 'fa fa-times',
+                validating: 'fa fa-refresh'
+            },
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The name is required'
+                        }
+                    }
+                },
+                description: {
+                    validators: {
+                        stringLength: {
+                            max: 300,
+                            message: 'The description must be less than 300 characters long'
+                        }
+                    }
+                },
+                price: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The price is required'
+                        },
+                        numeric: {
+                            message: 'The price must be a number'
+                        }
+                    }
+                },
+                quantity: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The quantity is required'
+                        },
+                        integer: {
+                            message: 'The quantity must be a number'
+                        }
+                    }
+                }
+            }
+        })
+
+        .on('status.field.fv', function(e, data) {
+            // Remove the required icon when the field updates its status
+            var $icon      = data.element.data('fv.icon'),
+                options    = data.fv.getOptions(),                      // Entire options
+                validators = data.fv.getOptions(data.field).validators; // The field validators
+
+            if (validators.notEmpty && options.icon && options.icon.required) {
+                $icon.removeClass(options.icon.required).addClass('fa');
+            }
+        });
+});
+</script>
+</head>
+<body>
+<ul class="nav nav-tabs" style="background-color:#000000">
+  <a class="navbar-brand" style="color:#859999" href="{% url 'home' %}">Home</a>
+  <p class="navbar-text navbar-right" style="margin-right:80px; color:#859999" >Hello <a href="#" style="color:#859999" class="navbar-link">{{ request.session.logged_in }}</a></p>
+  <a class="navbar-text navbar-right" style="margin-right:80px; color:#859999" role="presentation" href="{% url 'logout' %}">Logout</a>
+</ul>
+
+<div class="container">
+<h2>I & C Request Form</h2>
+<form method="post" data-toggle="validator" action="{% url 'scope_of_supply' %}" id="productForm" role="form">
+	 {% csrf_token %}
+	<fieldset>
+         <!--   {{ form.as_table }} -->
+         <div class="row" style="margin-top:20px;">
+		 <div class="form-group col-xs-6">
+		  <label for="username">Name of Customer</label>
+		 <input class="form-control" style="width:auto" type="text" name="customer"></input>
+		 </div>
+		 <div class="form-group col-xs-6">
+		 <label for="password">End User</label>
+         <input class="form-control" style="width:auto" type="text" name="enduser"></input>
+		</div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+		 <div class="form-group col-xs-6">
+		  <label for="username">Site Name</label>
+		 <input class="form-control" style="width:auto" type="text" name="sitename"></input>
+		 </div>
+		 <div class="form-group col-xs-6">
+		 <label for="password">Site Address</label>
+         <input class="form-control" style="width:auto" type="text" name="siteaddress"></input>
+		</div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+		 <div class="form-group col-xs-6">
+		  <label for="username">Contact Person 1 Name</label>
+		 <input class="form-control" style="width:auto" type="text" name="contactpersonname1"></input>
+		 </div>
+		 <div class="form-group col-xs-6">
+		 <label for="password">Contact Person 1 No.</label>
+         <input class="form-control" style="width:auto" type="text" name="contactpersonno1"></input>
+		</div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+         <div class="form-group col-xs-6">
+          <label for="username">Contact Person 2 Name</label>
+         <input class="form-control" style="width:auto" type="text" name="contactpersonname2"></input>
+         </div>
+         <div class="form-group col-xs-6">
+         <label for="password">Contact Person 2 No.</label>
+         <input class="form-control" style="width:auto" type="text" name="contactpersonno2"></input>
+        </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+		 <div class="form-group col-xs-6">
+		  <label for="username">Req. Date of Installation by Customer</label>
+		 <input class="form-control" style="width:auto" type="date" name="reqdateinstall"></input>
+		 </div>
+		 <div class="form-group col-xs-6">
+		 <label for="password">Pre Sign off Sheet Status</label>
+         <select class="form-control" style="width:auto"name="presignoff">
+         <option value="Customer Filled & Forwarded">Customer Filled & Forwarded</option>
+         <option value="Not Filled Not Forwarded">Not Filled Not Forwarded</option>
+         </select>
+		</div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+		 <div class="form-group col-xs-6">
+		  <label for="username">Site Status</label>
+		 <select class="form-control" style="width:auto"name="sitestatus">
+         <option value="Ready">Ready</option>
+         <option value="Not Ready">Not Ready</option>
+         </select>
+        </div>
+		 <div class="form-group col-xs-6">
+		  <label for="username">Name of Product Supplied</label>
+		 <select class="form-control" style="width:auto"name="nameofproduct">
+         <option value="TM1">TM1</option>
+         <option value="TM3">TM3</option>
+         <option value="TM8">TM8</option>
+         </select>
+		 </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+		 <div class="form-group col-xs-6">
+		 <label for="password">Quantity</label>
+         <input class="form-control" style="width:auto" type="number" name="qty"></input>
+		</div>
+		 <div class="form-group col-xs-6">
+		  <label for="username">Transformer Valve Size Details</label>
+		 <select class="form-control" style="width:auto"name="transformervalvesize">
+         <option value="15 NB">15 NB</option>
+         <option value="20 NB">20 NB</option>
+         <option value="25 NB">25 NB</option>
+         <option value="40 NB">40 NB</option>
+         <option value="50 NB">50 NB</option>
+         <option value="Other">Other</option>
+         </select>
+		 </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+		 <div class="form-group col-xs-6">
+		 <label for="password">Material Reached at Site</label>
+         <select class="form-control" style="width:auto"name="materialreached">
+         <option value="Yes">Yes</option>
+         <option value="No">No</option>
+         </select>
+		</div>
+		 <div class="form-group col-xs-6">
+		  <label for="username">Sales Manager Request No.</label>
+		 <input class="form-control" style="width:auto" type="text" name="salesmanagerrequestno"></input>
+		 </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Next</button>
+     
+		{% if error %}
+		{{error}}
+		{% endif %}
+	</fieldset>
+</form>
+</div>
+</body>
+</html>
